@@ -15,7 +15,7 @@ namespace PlatformService.Data
 
         private static void SeedData(AppDbContext appDbContext)
         {
-            if(!appDbContext.Platforms.Any())
+            if (!appDbContext.Platforms.Any())
             {
                 Debug.WriteLine("Seeding!");
 
