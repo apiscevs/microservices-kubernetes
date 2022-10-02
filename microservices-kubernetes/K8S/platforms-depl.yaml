@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: platforms-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: platformservice
+  template:
+    metadata:
+      labels:
+        app: platformservice
+    spec:
+      containers:
+        - name: platformservice
+          image: apiscevs/platformservice:latest
+#kubectl apply -f platforms-depl.yaml 
+#kubectl get deployments
+#kubectl get pods
+
+#kubectl delete deployment platforms-depl
