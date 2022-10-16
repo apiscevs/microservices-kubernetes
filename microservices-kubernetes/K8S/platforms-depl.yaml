@@ -15,8 +15,23 @@ spec:
       containers:
         - name: platformservice
           image: apiscevs/platformservice:latest
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: platforms-clusterip-srv
+spec:
+  type: ClusterIP
+  selector: 
+    app: platformservice
+  ports:
+  - name: platformservice
+    protocol: TCP
+    port: 80
+    targetPort: 80
 #kubectl apply -f platforms-depl.yaml 
 #kubectl get deployments
 #kubectl get pods
 
 #kubectl delete deployment platforms-depl
+#kubectl rollout restart deployment platforms-depl

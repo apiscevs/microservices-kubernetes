@@ -24,6 +24,8 @@
     <None Remove="DTO\" />
     <None Remove="AutoMapper" />
     <None Remove="Profiles\" />
+    <None Remove="SyncDataServices\" />
+    <None Remove="SyncDataServices\Http\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers\" />
@@ -31,6 +33,8 @@
     <Folder Include="Data\" />
     <Folder Include="DTO\" />
     <Folder Include="Profiles\" />
+    <Folder Include="SyncDataServices\" />
+    <Folder Include="SyncDataServices\Http\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\.editorconfig" />

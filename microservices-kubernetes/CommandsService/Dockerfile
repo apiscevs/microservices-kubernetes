@@ -1,4 +1,4 @@
-﻿FROM mcr.microsoft.com/dotnet/sdk:6.0 as build-env
+FROM mcr.microsoft.com/dotnet/sdk:6.0 as build-env
 WORKDIR /app
 
 COPY *.csproj ./
@@ -10,13 +10,13 @@ RUN dotnet publish -c Release -o out
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /app
 COPY --from=build-env /app/out .
-ENTRYPOINT [ "dotnet", "PlatformService.dll"]
+ENTRYPOINT [ "dotnet", "CommandsService.dll"]
 
 #to build/create an image
-#docker build -t apiscevs/platformservice .
+#docker build -t apiscevs/commandservice .
 
 #to run an image in the container (-d detached)
-#docker run -p 8080:80 -d apiscevs/platformservice
+#docker run -p 8080:80 -d apiscevs/commandservice
 
 #to push to a dockerhub
-#docker push apiscevs/platformservice±
+#docker push apiscevs/commandservice

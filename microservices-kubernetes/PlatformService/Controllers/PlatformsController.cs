@@ -1,9 +1,9 @@
-﻿using System.Collections.ObjectModel;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using PlatformService.Data;
 using PlatformService.DTO;
 using PlatformService.Models;
+using PlatformService.SyncDataServices.Http;
 
 namespace PlatformService.Controllers
 {
@@ -12,13 +12,16 @@ namespace PlatformService.Controllers
     public class PlatformsController : ControllerBase
     {
         private readonly IPlatformRepository platformRepository;
+        private readonly ICommandDataClient commandDataClient;
         private readonly IMapper mapper;
 
         public PlatformsController(
             IPlatformRepository platformRepository,
+            ICommandDataClient commandDataClient,
             IMapper mapper)
         {   
             this.platformRepository = platformRepository;
+            this.commandDataClient = commandDataClient;
             this.mapper = mapper;
         }
 
@@ -54,8 +57,16 @@ namespace PlatformService.Controllers
 
             var dto = mapper.Map<PlatformReadDTO>(platform);
 
+            try
+            {
+                await commandDataClient.SendPlatformCommand(dto);
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine($"Exception during {nameof(CreatePlatform)}. {e.Message}");
+            }
+
             return CreatedAtRoute(nameof(GetByID), new { id = dto.Id }, dto);
-            //return Ok(dto);
         }
     }
 }

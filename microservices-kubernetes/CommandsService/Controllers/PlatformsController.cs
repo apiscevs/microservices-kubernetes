@@ -12,7 +12,7 @@ public class PlatformsController : ControllerBase
     }
 
 
-    [HttpGet]
+    [HttpPost]
     public async Task<ActionResult> TestInboundConnection()
     {
         Console.WriteLine("Hello from TestInboundConnection");
