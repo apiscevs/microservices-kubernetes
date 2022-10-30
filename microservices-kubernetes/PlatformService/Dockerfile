@@ -19,4 +19,4 @@ ENTRYPOINT [ "dotnet", "PlatformService.dll"]
 #docker run -p 8080:80 -d apiscevs/platformservice
 
 #to push to a dockerhub
-#docker push apiscevs/platformservice±
+#docker push apiscevs/platformservice

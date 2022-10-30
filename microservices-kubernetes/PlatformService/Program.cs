@@ -16,17 +16,21 @@ builder.Services.AddSwaggerGen();
 if (builder.Environment.IsDevelopment())
 {
     Console.WriteLine("Using in memory DB");
+    var connectionString = builder.Configuration.GetConnectionString("PlatformsConnectionString");
+    Console.WriteLine($"Using Postgres DB {connectionString}");
     builder.Services.AddDbContext<AppDbContext>(opt =>
     {
-        opt.UseInMemoryDatabase("InMemoryDb");
+        //opt.UseInMemoryDatabase("InMemoryDb");
+        opt.UseNpgsql(connectionString);
     });
 }
 else
 {
-    Console.WriteLine($"Using Postgres DB {builder.Configuration.GetConnectionString("PlatformsConnectionString")}");
+    var connectionString = builder.Configuration.GetConnectionString("PlatformsConnectionString");
+    Console.WriteLine($"Using Postgres DB {connectionString}");
     builder.Services.AddDbContext<AppDbContext>(opt =>
     {       
-        opt.UseNpgsql(builder.Configuration.GetConnectionString("PlatformsConnectionString"));
+        opt.UseNpgsql(connectionString);
     });
 }
 
@@ -47,6 +51,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-PrepareDatabase.PreparePopulation(app);
+PrepareDatabase.PreparePopulation(app, builder.Environment.IsProduction());
 app.Run();
 

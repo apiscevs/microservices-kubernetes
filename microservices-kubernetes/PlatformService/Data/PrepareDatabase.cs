@@ -1,20 +1,34 @@
 ﻿using System.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 using PlatformService.Models;
 
 namespace PlatformService.Data
 {
     public static class PrepareDatabase
     {
-        public static void PreparePopulation(IApplicationBuilder builder)
+        public static void PreparePopulation(IApplicationBuilder builder, bool isProduction)
         {
             using (var serviceScope = builder.ApplicationServices.CreateScope())
             {
-                SeedData(serviceScope.ServiceProvider.GetService<AppDbContext>()); 
+                SeedData(serviceScope.ServiceProvider.GetService<AppDbContext>(), isProduction); 
             }
         }
 
-        private static void SeedData(AppDbContext appDbContext)
+        private static void SeedData(AppDbContext appDbContext, bool isProduction)
         {
+         //   if (isProduction)
+            {
+                Console.WriteLine("Applying migrations if any...");
+                try
+                {
+                    appDbContext.Database.Migrate();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error during applying migrations: {ex.Message}");
+                }
+            }
+
             if (!appDbContext.Platforms.Any())
             {
                 Debug.WriteLine("Seeding!");
