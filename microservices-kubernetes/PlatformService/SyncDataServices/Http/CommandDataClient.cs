@@ -8,13 +8,10 @@ namespace PlatformService.SyncDataServices.Http
     public class CommandDataClient : ICommandDataClient
     {
         private readonly HttpClient httpClient;
-        private readonly IConfiguration configuration;
 
-        public CommandDataClient(HttpClient httpClient,
-            IConfiguration configuration)
+        public CommandDataClient(HttpClient httpClient)
         {
             this.httpClient = httpClient;
-            this.configuration = configuration;
         }
 
         public async Task SendPlatformCommand(PlatformReadDTO platform)
@@ -25,7 +22,7 @@ namespace PlatformService.SyncDataServices.Http
                 "application/json");
 
             var response = await httpClient.
-                PostAsync($"{configuration["CommandService"]}/api/c/Platforms", httpContent);
+                PostAsync("api/c/Platforms", httpContent);
 
             if (response.IsSuccessStatusCode)
             {

@@ -11,11 +11,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-if (builder.Environment.IsDevelopment())
+// if (builder.Environment.IsDevelopment())
 {
-    Console.WriteLine("Using in memory DB");
     var connectionString = builder.Configuration.GetConnectionString("PlatformsConnectionString");
-    Console.WriteLine($"Using Postgres DB {connectionString}");
+    Console.WriteLine($"Using DB {connectionString}");
     builder.Services.AddDbContext<AppDbContext>(opt =>
     {
         // opt.UseSqlServer(connectionString);
@@ -26,7 +25,8 @@ if (builder.Environment.IsDevelopment())
 
 builder.Services.AddScoped<IPlatformRepository, PlatformRepository>();
 
-builder.Services.AddHttpClient<ICommandDataClient, CommandDataClient>();
+builder.Services.AddHttpClient<ICommandDataClient, CommandDataClient>(
+    client => client.BaseAddress = new Uri(builder.Configuration["CommandService"]));
 
 var app = builder.Build();
 
