@@ -4,8 +4,6 @@ using PlatformService.SyncDataServices.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
-
 // Add services to the container.
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddControllers();
@@ -20,17 +18,9 @@ if (builder.Environment.IsDevelopment())
     Console.WriteLine($"Using Postgres DB {connectionString}");
     builder.Services.AddDbContext<AppDbContext>(opt =>
     {
-        opt.UseInMemoryDatabase("InMemoryDb");
+        opt.UseSqlServer(connectionString);
+        // opt.UseInMemoryDatabase("InMemoryDb");
         // opt.UseNpgsql(connectionString);
-    });
-}
-else
-{
-    var connectionString = builder.Configuration.GetConnectionString("PlatformsConnectionString");
-    Console.WriteLine($"Using Postgres DB {connectionString}");
-    builder.Services.AddDbContext<AppDbContext>(opt =>
-    {       
-        opt.UseNpgsql(connectionString);
     });
 }
 

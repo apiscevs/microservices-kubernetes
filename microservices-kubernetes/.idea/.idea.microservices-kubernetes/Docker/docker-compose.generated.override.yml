@@ -1,0 +1,40 @@
+# This is a generated file. Not intended for manual editing.
+services:
+  commandsservice:
+    build:
+      context: "/Users/aleksejspiscevs/Projects/NET/kubernetes/microservices-kubernetes"
+      dockerfile: "CommandsService/Dockerfile"
+      target: "base"
+    command: []
+    entrypoint:
+    - "dotnet"
+    - "/app/bin/Debug/net8.0/CommandsService.dll"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      DOTNET_USE_POLLING_FILE_WATCHER: "true"
+    image: "commandsservice:dev"
+    ports: []
+    volumes:
+    - "/Users/aleksejspiscevs/.nuget/packages:/root/.nuget/packages"
+    - "/Users/aleksejspiscevs/Projects/NET/kubernetes/microservices-kubernetes/CommandsService:/app:rw"
+    - "/Users/aleksejspiscevs/Projects/NET/kubernetes/microservices-kubernetes:/src:rw"
+    working_dir: "/app"
+  platformservice:
+    build:
+      context: "/Users/aleksejspiscevs/Projects/NET/kubernetes/microservices-kubernetes"
+      dockerfile: "PlatformService/Dockerfile"
+      target: "base"
+    command: []
+    entrypoint:
+    - "dotnet"
+    - "/app/bin/Debug/net8.0/PlatformService.dll"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      DOTNET_USE_POLLING_FILE_WATCHER: "true"
+    image: "platformservice:dev"
+    ports: []
+    volumes:
+    - "/Users/aleksejspiscevs/.nuget/packages:/root/.nuget/packages"
+    - "/Users/aleksejspiscevs/Projects/NET/kubernetes/microservices-kubernetes/PlatformService:/app:rw"
+    - "/Users/aleksejspiscevs/Projects/NET/kubernetes/microservices-kubernetes:/src:rw"
+    working_dir: "/app"

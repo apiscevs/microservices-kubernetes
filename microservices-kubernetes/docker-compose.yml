@@ -1,0 +1,33 @@
+﻿services:
+  platformservice:
+    image: platformservice
+    build:
+      context: .
+      dockerfile: PlatformService/Dockerfile
+    ports:
+      - "10100:8080"
+    depends_on:
+      - sqlserver
+
+  commandsservice:
+    image: commandsservice
+    build:
+      context: .
+      dockerfile: CommandsService/Dockerfile
+    ports:
+      - "10101:8080"
+    depends_on:
+      - sqlserver
+  
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    user: root
+    environment:
+      SA_PASSWORD: "Your_password123"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1436:1433"
+    volumes:
+      - sql-data:/var/opt/mssql/data
+volumes:
+  sql-data:
