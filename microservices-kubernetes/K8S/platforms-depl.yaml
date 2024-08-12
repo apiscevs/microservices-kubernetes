@@ -14,27 +14,30 @@ spec:
     spec:
       containers:
         - name: platformservice
-          image: apiscevs/platformservice:latest
+          image: platformservice:dev # for release apiscevs/platformservice:dev
+          imagePullPolicy: IfNotPresent # Get to the repo only if it is missing locally
           env:
           - name: "ASPNETCORE_ENVIRONMENT"
-            value: "Production"
+            value: "Development" #can be Production
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: platforms-clusterip-srv
-spec:
-  type: ClusterIP
-  selector: 
-    app: platformservice
-  ports:
-  - name: platformservice
-    protocol: TCP
-    port: 80
-    targetPort: 80
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: platforms-clusterip-srv
+#spec:
+#  type: ClusterIP
+#  selector: 
+#    app: platformservice
+#  ports:
+#  - name: platformservice
+#    protocol: TCP
+#    port: 80
+#    targetPort: 80
 #kubectl apply -f platforms-depl.yaml 
 #kubectl get deployments
 #kubectl get pods
 
 #kubectl delete deployment platforms-depl
 #kubectl rollout restart deployment platforms-depl
+
+# kubectl logs platforms-depl-744b9f9b47-qp2sv -- read logs from the pod
