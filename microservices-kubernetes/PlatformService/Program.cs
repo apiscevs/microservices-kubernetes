@@ -20,8 +20,8 @@ if (builder.Environment.IsDevelopment())
     Console.WriteLine($"Using Postgres DB {connectionString}");
     builder.Services.AddDbContext<AppDbContext>(opt =>
     {
-        //opt.UseInMemoryDatabase("InMemoryDb");
-        opt.UseNpgsql(connectionString);
+        opt.UseInMemoryDatabase("InMemoryDb");
+        // opt.UseNpgsql(connectionString);
     });
 }
 else
