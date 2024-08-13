@@ -19,9 +19,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "K8S", "K8S", "{3721B9AA-4F5
 		K8S\platforms-nodeport-service.yaml = K8S\platforms-nodeport-service.yaml
 		K8S\local-pv.yaml = K8S\local-pv.yaml
 		K8S\local-pvc.yaml = K8S\local-pvc.yaml
-		K8S\ingress-srv.yaml = K8S\ingress-srv.yaml
 		K8S\commands-depl.yaml = K8S\commands-depl.yaml
 		K8S\postgres-plat-depl.yaml = K8S\postgres-plat-depl.yaml
+		K8S\IngressNginxInstructions.txt = K8S\IngressNginxInstructions.txt
+		K8S\ingress-service.yaml = K8S\ingress-service.yaml
 	EndProjectSection
 EndProject
 Global
