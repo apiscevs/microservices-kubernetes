@@ -7,15 +7,15 @@
     ports:
       - "10100:8080"
     environment:
-      - CommandService=http://commandsservice:8080
+      - CommandService=http://commandservice:8080
     depends_on:
       - sqlserver
 
-  commandsservice:
-    image: commandsservice
+  commandservice:
+    image: commandservice
     build:
       context: .
-      dockerfile: CommandsService/Dockerfile
+      dockerfile: CommandService/Dockerfile
     ports:
       - "10101:8080"
     depends_on:

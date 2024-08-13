@@ -14,7 +14,8 @@ spec:
     spec:
       containers:
         - name: commandservice
-          image: apiscevs/commandservice:latest
+          image: commandservice:dev # for release apiscevs/commandservice:dev
+          imagePullPolicy: IfNotPresent # Get to the repo only if it is missing locally
 ---
 apiVersion: v1
 kind: Service
@@ -28,7 +29,7 @@ spec:
   - name: commandservice
     protocol: TCP
     port: 80
-    targetPort: 80
+    targetPort: 8080 # the port that docker container is exposing
 #kubectl apply -f commands-depl.yaml 
 #kubectl get deployments
 #kubectl get pods

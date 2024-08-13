@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace CommandsService.Controllers;
+namespace CommandService.Controllers;
 
 [ApiController]
 [Route("api/c/[controller]")]

@@ -25,8 +25,10 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IPlatformRepository, PlatformRepository>();
 
+var commandServiceUrl = builder.Configuration["CommandService"];
+Console.WriteLine($"UPD!? CommandService URL => {commandServiceUrl}");
 builder.Services.AddHttpClient<ICommandDataClient, CommandDataClient>(
-    client => client.BaseAddress = new Uri(builder.Configuration["CommandService"]));
+    client => client.BaseAddress = new Uri(commandServiceUrl));
 
 var app = builder.Build();
 
