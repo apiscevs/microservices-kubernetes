@@ -1,15 +1,14 @@
+# did not use
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: pv-volume
+  name: mssql-pv
   labels:
-    type: local
+    type: mssql-data
 spec:
-  persistentVolumeReclaimPolicy: Retain
-  storageClassName: manual
   capacity:
-    storage: 5Gi
+    storage: 200Mi
   accessModes:
     - ReadWriteMany
   hostPath:
-    path: "/mnt/data"
+    path: /mnt/data

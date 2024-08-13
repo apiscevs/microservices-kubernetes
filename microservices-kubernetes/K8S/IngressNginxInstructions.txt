@@ -6,3 +6,9 @@ kubectl get namespaces
 #should have one pod running, some could be completed it is fine
 kubectl get pods --namespace=ingress-nginx
 kubectl get service --namespace=ingress-nginx
+
+
+
+#setup password
+kubectl create secret generic mssql --from-literal=SA_PASSWORD="Your_password123"
+

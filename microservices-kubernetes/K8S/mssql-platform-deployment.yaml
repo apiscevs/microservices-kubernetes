@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mssql-platform
+  labels:
+    app: mssql-platform
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mssql-platform
+  template:
+    metadata:
+      name: mssql-platform
+      labels:
+        app: mssql-platform
+    spec:
+      containers:
+        - name: mssql-platform
+          image: mcr.microsoft.com/mssql/server:2022-latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 1433
+              protocol: TCP
+          env:
+            - name: MSSQL_PID
+              value: "Express"
+            - name: ACCEPT_EULA
+              value: "Y"  
+            - name: SA_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mssql
+                  key: SA_PASSWORD
+          volumeMounts:
+             - mountPath: "/var/opt/mssql"
+               name: mssqldb-volume
+      volumes:
+        - name: mssqldb-volume
+          persistentVolumeClaim:
+            claimName: mssql-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mssql-platforms-clusterip-srv
+spec:
+  type: ClusterIP
+  selector:
+    app: mssql-platform
+  ports:
+  - name: mssql-platform
+    protocol: TCP
+    port: 1433
+    targetPort: 1433 # the port that docker container is exposing
+---
+# to be able to access from host machine
+apiVersion: v1 
+kind: Service
+metadata:
+  name: mssql-platforms-loadbalancer
+spec:
+  type: LoadBalancer
+  selector:
+    app: mssql-platform
+  ports:
+  - protocol: TCP
+    port: 1440
+    targetPort: 1433 # the port that docker container is exposing
