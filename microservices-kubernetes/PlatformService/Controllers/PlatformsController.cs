@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using PlatformService.AsyncDataServices;
 using PlatformService.Data;
 using PlatformService.DTO;
 using PlatformService.Models;
@@ -11,25 +12,28 @@ namespace PlatformService.Controllers
     [Route("api/[controller]")]
     public class PlatformsController : ControllerBase
     {
-        private readonly IPlatformRepository platformRepository;
-        private readonly ICommandDataClient commandDataClient;
-        private readonly IMapper mapper;
+        private readonly IPlatformRepository _platformRepository;
+        private readonly ICommandDataClient _commandDataClient;
+        private readonly IMessageBrokerClient _messageBrokerClient;
+        private readonly IMapper _mapper;
 
         public PlatformsController(
             IPlatformRepository platformRepository,
             ICommandDataClient commandDataClient,
+            IMessageBrokerClient messageBrokerClient,
             IMapper mapper)
         {   
-            this.platformRepository = platformRepository;
-            this.commandDataClient = commandDataClient;
-            this.mapper = mapper;
+            _platformRepository = platformRepository;
+            _commandDataClient = commandDataClient;
+            _messageBrokerClient = messageBrokerClient;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public async Task<ActionResult<ICollection<PlatformReadDTO>>> GetPlatforms()
         {
-            var platforms = await platformRepository.GetAllAsync();
-            var dtos = mapper.Map<ICollection<PlatformReadDTO>>(platforms);
+            var platforms = await _platformRepository.GetAllAsync();
+            var dtos = _mapper.Map<ICollection<PlatformReadDTO>>(platforms);
             return Ok(dtos);
         }
 
@@ -37,10 +41,10 @@ namespace PlatformService.Controllers
         //[Route("GetById")]
         public async Task<ActionResult<PlatformReadDTO>> GetByID(int id)
         {
-            var platform = await platformRepository.GetByIdAsync(id);
+            var platform = await _platformRepository.GetByIdAsync(id);
             if (platform is not null)
             {
-                var dto = mapper.Map<PlatformReadDTO>(platform);
+                var dto = _mapper.Map<PlatformReadDTO>(platform);
                 return Ok(dto);
             }
 
@@ -50,23 +54,38 @@ namespace PlatformService.Controllers
         [HttpPost]
         public async Task<ActionResult<PlatformReadDTO>> CreatePlatform([FromBody] PlatformCreateDTO model)
         {
-            var platform = mapper.Map<Platform>(model);
+            var platform = _mapper.Map<Platform>(model);
 
-            platformRepository.CreatePlatform(platform);
-            await platformRepository.SaveChangesAsync();
+            _platformRepository.CreatePlatform(platform);
+            await _platformRepository.SaveChangesAsync();
 
-            var dto = mapper.Map<PlatformReadDTO>(platform);
+            var platformReadDto = _mapper.Map<PlatformReadDTO>(platform);
 
+            // Send sync message
             try
             {
-                await commandDataClient.SendPlatformCommand(dto);
+                await _commandDataClient.SendPlatformCommand(platformReadDto);
             }
             catch(Exception e)
             {
-                Console.WriteLine($"Exception during {nameof(CreatePlatform)}. {e.Message}");
+                Console.WriteLine($"Exception during sending synchronously {nameof(CreatePlatform)}. {e.Message}");
             }
 
-            return CreatedAtRoute(nameof(GetByID), new { id = dto.Id }, dto);
+            // Send async message
+            try
+            {
+                // TODO: map from model
+                var publishMessage = _mapper.Map<PlatformPublishedDTO>(platformReadDto);
+                // TODO: move to const
+                publishMessage.Event = "PlatformPublished";
+                _messageBrokerClient.PublishNewPlatform(publishMessage);
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine($"Exception during sending asynchronously {nameof(CreatePlatform)}. {e.Message}");
+            }
+            
+            return CreatedAtRoute(nameof(GetByID), new { id = platformReadDto.Id }, platformReadDto);
         }
     }
 }

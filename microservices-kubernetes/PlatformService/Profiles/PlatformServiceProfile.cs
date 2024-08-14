@@ -15,6 +15,8 @@ namespace PlatformService.Profiles
             CreateMap<PlatformCreateDTO, Platform>()
                 .ForMember(t => t.Id, t => t.Ignore())
                 .ReverseMap();
+
+            CreateMap<PlatformReadDTO, PlatformPublishedDTO>();
         }
     }
 }

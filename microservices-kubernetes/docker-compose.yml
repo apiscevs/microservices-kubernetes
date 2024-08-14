@@ -31,5 +31,16 @@
       - "1436:1433"
     volumes:
       - sql-data:/var/opt/mssql/data
+        
+  rabbitmq:
+    image: rabbitmq:3.12.12-management
+    container_name: rabbitmq
+    ports:
+      - "15673:15672"  # Web management UI
+      - "5673:5672"    # AMQP
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+        
 volumes:
   sql-data:

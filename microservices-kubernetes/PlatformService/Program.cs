@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PlatformService.AsyncDataServices;
 using PlatformService.Data;
 using PlatformService.SyncDataServices.Http;
 
@@ -26,6 +27,8 @@ var commandServiceUrl = builder.Configuration["CommandService"];
 Console.WriteLine($"UPD!? CommandService URL => {commandServiceUrl}");
 builder.Services.AddHttpClient<ICommandDataClient, CommandDataClient>(
     client => client.BaseAddress = new Uri(commandServiceUrl));
+
+builder.Services.AddSingleton<IMessageBrokerClient, RabbitMqClient>();
 
 var app = builder.Build();
 
