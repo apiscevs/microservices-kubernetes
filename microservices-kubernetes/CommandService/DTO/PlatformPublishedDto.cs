@@ -1,6 +1,6 @@
-namespace PlatformService.DTO;
+namespace CommandService.DTO;
 
-public class PlatformPublishedDTO
+public class PlatformPublishedDto
 {
     public int Id { get; set; }
         

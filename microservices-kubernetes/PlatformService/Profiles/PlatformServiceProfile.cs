@@ -9,14 +9,14 @@ namespace PlatformService.Profiles
     {
         public PlatformServiceProfile()
         {
-            CreateMap<Platform, PlatformReadDTO>()
+            CreateMap<Platform, PlatformReadDto>()
                 .ReverseMap();
 
-            CreateMap<PlatformCreateDTO, Platform>()
+            CreateMap<PlatformCreateDto, Platform>()
                 .ForMember(t => t.Id, t => t.Ignore())
                 .ReverseMap();
 
-            CreateMap<PlatformReadDTO, PlatformPublishedDTO>();
+            CreateMap<PlatformReadDto, PlatformPublishedDto>();
         }
     }
 }

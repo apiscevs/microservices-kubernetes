@@ -5,16 +5,16 @@ namespace PlatformService.Data
 {
     public class PlatformRepository : IPlatformRepository
     {
-        private readonly AppDbContext dbContext;
+        private readonly AppDbContext _dbContext;
 
         public PlatformRepository(AppDbContext dbContext)
         {
-            this.dbContext = dbContext;
+            this._dbContext = dbContext;
         }
 
         public async Task<Platform> GetByIdAsync(int id)
         {
-            return await dbContext.Platforms.FirstOrDefaultAsync(t => t.Id == id);
+            return await _dbContext.Platforms.FirstOrDefaultAsync(t => t.Id == id);
         }
 
         public void CreatePlatform(Platform platform)
@@ -24,17 +24,17 @@ namespace PlatformService.Data
                 throw new ArgumentNullException(nameof(Platform));
             }
 
-            dbContext.Platforms.Add(platform);
+            _dbContext.Platforms.Add(platform);
         }
 
         public async Task<ICollection<Platform>> GetAllAsync()
         {
-            return await dbContext.Platforms.ToListAsync();
+            return await _dbContext.Platforms.ToListAsync();
         }
 
         public async Task<bool> SaveChangesAsync()
         {
-            return await dbContext.SaveChangesAsync() >= 0;
+            return await _dbContext.SaveChangesAsync() >= 0;
         }
     }
 }

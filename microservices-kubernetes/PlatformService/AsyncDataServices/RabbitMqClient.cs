@@ -43,7 +43,7 @@ public class RabbitMqClient : IMessageBrokerClient
         }
     }
 
-    public void PublishNewPlatform(PlatformPublishedDTO platformPublishedDto)
+    public void PublishNewPlatform(PlatformPublishedDto platformPublishedDto)
     {
         var message = JsonSerializer.Serialize(platformPublishedDto);
 

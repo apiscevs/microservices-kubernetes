@@ -30,21 +30,21 @@ namespace PlatformService.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<ICollection<PlatformReadDTO>>> GetPlatforms()
+        public async Task<ActionResult<ICollection<PlatformReadDto>>> GetPlatforms()
         {
             var platforms = await _platformRepository.GetAllAsync();
-            var dtos = _mapper.Map<ICollection<PlatformReadDTO>>(platforms);
+            var dtos = _mapper.Map<ICollection<PlatformReadDto>>(platforms);
             return Ok(dtos);
         }
 
-        [HttpGet("{id}", Name = nameof(GetByID))]
+        [HttpGet("{id}", Name = nameof(GetById))]
         //[Route("GetById")]
-        public async Task<ActionResult<PlatformReadDTO>> GetByID(int id)
+        public async Task<ActionResult<PlatformReadDto>> GetById(int id)
         {
             var platform = await _platformRepository.GetByIdAsync(id);
             if (platform is not null)
             {
-                var dto = _mapper.Map<PlatformReadDTO>(platform);
+                var dto = _mapper.Map<PlatformReadDto>(platform);
                 return Ok(dto);
             }
 
@@ -52,14 +52,14 @@ namespace PlatformService.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<PlatformReadDTO>> CreatePlatform([FromBody] PlatformCreateDTO model)
+        public async Task<ActionResult<PlatformReadDto>> CreatePlatform([FromBody] PlatformCreateDto model)
         {
             var platform = _mapper.Map<Platform>(model);
 
             _platformRepository.CreatePlatform(platform);
             await _platformRepository.SaveChangesAsync();
 
-            var platformReadDto = _mapper.Map<PlatformReadDTO>(platform);
+            var platformReadDto = _mapper.Map<PlatformReadDto>(platform);
 
             // Send sync message
             try
@@ -75,7 +75,7 @@ namespace PlatformService.Controllers
             try
             {
                 // TODO: map from model
-                var publishMessage = _mapper.Map<PlatformPublishedDTO>(platformReadDto);
+                var publishMessage = _mapper.Map<PlatformPublishedDto>(platformReadDto);
                 // TODO: move to const
                 publishMessage.Event = "PlatformPublished";
                 _messageBrokerClient.PublishNewPlatform(publishMessage);
@@ -85,7 +85,7 @@ namespace PlatformService.Controllers
                 Console.WriteLine($"Exception during sending asynchronously {nameof(CreatePlatform)}. {e.Message}");
             }
             
-            return CreatedAtRoute(nameof(GetByID), new { id = platformReadDto.Id }, platformReadDto);
+            return CreatedAtRoute(nameof(GetById), new { id = platformReadDto.Id }, platformReadDto);
         }
     }
 }

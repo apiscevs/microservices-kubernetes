@@ -7,21 +7,21 @@ namespace PlatformService.SyncDataServices.Http
 {   
     public class CommandDataClient : ICommandDataClient
     {
-        private readonly HttpClient httpClient;
+        private readonly HttpClient _httpClient;
 
         public CommandDataClient(HttpClient httpClient)
         {
-            this.httpClient = httpClient;
+            this._httpClient = httpClient;
         }
 
-        public async Task SendPlatformCommand(PlatformReadDTO platform)
+        public async Task SendPlatformCommand(PlatformReadDto platform)
         {
             var httpContent = new StringContent(
                 JsonSerializer.Serialize(platform),
                 Encoding.UTF8,
                 "application/json");
 
-            var response = await httpClient.
+            var response = await _httpClient.
                 PostAsync("api/c/Platforms", httpContent);
 
             if (response.IsSuccessStatusCode)

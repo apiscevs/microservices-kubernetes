@@ -4,5 +4,5 @@ namespace PlatformService.AsyncDataServices;
 
 public interface IMessageBrokerClient
 {
-    void PublishNewPlatform(PlatformPublishedDTO platformPublishedDto);
+    void PublishNewPlatform(PlatformPublishedDto platformPublishedDto);
 }
