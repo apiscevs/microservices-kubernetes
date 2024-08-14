@@ -11,17 +11,14 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// if (builder.Environment.IsDevelopment())
+
+var connectionString = builder.Configuration.GetConnectionString("PlatformsConnectionString");
+Console.WriteLine($"Using DB {connectionString}");
+builder.Services.AddDbContext<AppDbContext>(opt =>
 {
-    var connectionString = builder.Configuration.GetConnectionString("PlatformsConnectionString");
-    Console.WriteLine($"Using DB {connectionString}");
-    builder.Services.AddDbContext<AppDbContext>(opt =>
-    {
-        // opt.UseSqlServer(connectionString);
-        opt.UseInMemoryDatabase("InMemoryDb");
-        // opt.UseNpgsql(connectionString);
-    });
-}
+    opt.UseSqlServer(connectionString);
+    // opt.UseInMemoryDatabase("InMemoryDb");
+});
 
 builder.Services.AddScoped<IPlatformRepository, PlatformRepository>();
 
