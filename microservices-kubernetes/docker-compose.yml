@@ -6,6 +6,7 @@
       dockerfile: PlatformService/Dockerfile
     ports:
       - "10100:8080"
+      - "10200:666"
     environment:
       - CommandService=http://commandservice:8080
     depends_on:
