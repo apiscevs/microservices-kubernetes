@@ -26,9 +26,18 @@ builder.Services.AddScoped<IPlatformRepository, PlatformRepository>();
 
 var commandServiceUrl = builder.Configuration["CommandService"];
 Console.WriteLine($"UPD!? CommandService URL => {commandServiceUrl}");
-builder.Services.AddHttpClient<ICommandDataClient, CommandDataClient>(
-    client => client.BaseAddress = new Uri(commandServiceUrl));
-
+builder.Services.AddHttpClient<ICommandDataClient, CommandDataClient>(client =>
+    {
+        client.BaseAddress = new Uri(commandServiceUrl);
+        client.DefaultRequestHeaders.ConnectionClose = false; // Ensures connections stay open for reuse
+    })
+    .ConfigurePrimaryHttpMessageHandler(() =>
+    {
+        return new SocketsHttpHandler
+        {
+            PooledConnectionLifetime = TimeSpan.FromSeconds(60) // Helps to load balance request across the pod once scaled
+        };
+    });
 builder.Services.AddSingleton<IMessageBrokerClient, RabbitMqClient>();
 builder.Services.AddGrpc();
 
