@@ -1,7 +1,9 @@
 ﻿using CommandService.AsyncDataServices;
 using CommandService.Data;
 using CommandService.EventProcessing;
+using CommandService.SyncDataServices.Grpc;
 using Microsoft.EntityFrameworkCore;
+using PlatformService.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +16,7 @@ builder.Services.AddHostedService<MessageBusSubscriber>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddScoped<IPlatformDataClient, PlatformDataClient>();
 builder.Services.AddScoped<ICommandRepository, CommandRepository>();
 builder.Services.AddSingleton<IEventProcessor, RabbitMqProcessor>();
 
@@ -36,6 +39,8 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+await PrepareDatabase.PrepPopulationAsync(app);
 
 app.Run();
 

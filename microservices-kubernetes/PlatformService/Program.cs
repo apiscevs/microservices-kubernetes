@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PlatformService.AsyncDataServices;
 using PlatformService.Data;
+using PlatformService.SyncDataServices.Grpc;
 using PlatformService.SyncDataServices.Http;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,6 +30,7 @@ builder.Services.AddHttpClient<ICommandDataClient, CommandDataClient>(
     client => client.BaseAddress = new Uri(commandServiceUrl));
 
 builder.Services.AddSingleton<IMessageBrokerClient, RabbitMqClient>();
+builder.Services.AddGrpc();
 
 var app = builder.Build();
 
@@ -39,9 +41,21 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseRouting();
 app.UseAuthorization();
 
-app.MapControllers();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+    endpoints.MapGrpcService<GrpcPlatformService>();
+
+    // Serve the .proto file
+    endpoints.MapGet("/protos/platforms.proto", async context =>
+    {
+        context.Response.ContentType = "text/plain";
+        await context.Response.SendFileAsync("Protos/platforms.proto");
+    });
+});
 
 PrepareDatabase.PreparePopulation(app, builder.Environment.IsProduction());
 app.Run();
