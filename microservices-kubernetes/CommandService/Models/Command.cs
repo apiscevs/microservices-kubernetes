@@ -6,13 +6,13 @@ namespace CommandService.Models;
 public class Command
 {
     [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
+    [DatabaseGenerated(DatabaseGeneratedOption.None)]
+    public string Id { get; set; } = Guid.NewGuid().ToString(); 
     [Required]
     public string HowTo { get; set; }
     [Required]
     public string CommandLine { get; set; }
     [Required]
-    public int PlatformId { get; set; }
+    public string PlatformId { get; set; }
     public Platform Platform { get; set; }
 }

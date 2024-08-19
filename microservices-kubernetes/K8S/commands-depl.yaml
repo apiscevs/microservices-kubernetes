@@ -16,6 +16,17 @@ spec:
         - name: commandservice
           image: commandservice:dev # for release apiscevs/commandservice:dev
           imagePullPolicy: IfNotPresent # Get to the repo only if it is missing locally
+          env:
+            - name: CosmosDbSettings__CosmosDbEndpoint
+              valueFrom:
+                secretKeyRef:
+                  name: cosmosdb-secret
+                  key: CosmosDbEndpoint
+            - name: CosmosDbSettings__CosmosDbAccountKey
+              valueFrom:
+                secretKeyRef:
+                  name: cosmosdb-secret
+                  key: CosmosDbAccountKey
 ---
 apiVersion: v1
 kind: Service

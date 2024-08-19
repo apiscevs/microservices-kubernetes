@@ -15,6 +15,7 @@ services:
     image: "commandservice:dev"
     ports: []
     volumes:
+    - "/Users/aleksejspiscevs/.microsoft/usersecrets:/root/.microsoft/usersecrets"
     - "/Users/aleksejspiscevs/.nuget/packages:/root/.nuget/packages"
     - "/Users/aleksejspiscevs/Projects/NET/kubernetes/microservices-kubernetes/CommandService:/app:rw"
     - "/Users/aleksejspiscevs/Projects/NET/kubernetes/microservices-kubernetes:/src:rw"

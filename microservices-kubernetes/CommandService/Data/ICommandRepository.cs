@@ -9,12 +9,12 @@ namespace CommandService.Data
         // Platforms
         Task<ICollection<Platform>> GetAllPlatformsAsync();
         Task CreatePlatformAsync(Platform platform);
-        Task<bool> PlatformExistsAsync(int platformId);
-        Task<bool> PlatformExistsByExternalIdAsync(int externalPlatformId);
+        Task<bool> PlatformExistsAsync(Guid platformId);
+        Task<bool> PlatformExistsByExternalIdAsync(string externalPlatformId);
         
         // Commands
-        Task<ICollection<Command>> GetCommandsForPlatformAsync(int platformId);
-        Task<Command?> GetCommandAsync(int platformId, int commandId);
-        Task CreateCommandAsync(int platformId, Command command);
+        Task<ICollection<Command>> GetCommandsForPlatformAsync(Guid platformId);
+        Task<Command?> GetCommandAsync(Guid platformId, Guid commandId);
+        Task CreateCommandAsync(Guid platformId, Command command);
     }
 }

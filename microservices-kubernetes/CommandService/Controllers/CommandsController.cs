@@ -20,7 +20,7 @@ public class CommandsController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<CommandReadDto>>> GetCommandsForPlatform(int platformId)
+    public async Task<ActionResult<IEnumerable<CommandReadDto>>> GetCommandsForPlatform(Guid platformId)
     {
         Console.WriteLine($"--> Hit GetCommandsForPlatform: {platformId}");
     
@@ -35,7 +35,7 @@ public class CommandsController : ControllerBase
     }
     
     [HttpGet("{commandId}", Name = "GetCommandForPlatform")]
-    public async Task<ActionResult<CommandReadDto>> GetCommandForPlatform(int platformId, int commandId)
+    public async Task<ActionResult<CommandReadDto>> GetCommandForPlatform(Guid platformId, Guid commandId)
     {
         Console.WriteLine($"--> Hit GetCommandForPlatform: {platformId} / {commandId}");
     
@@ -55,7 +55,7 @@ public class CommandsController : ControllerBase
     }
     
     [HttpPost]
-    public async Task<ActionResult<CommandReadDto>> CreateCommandForPlatform(int platformId, CommandCreateDto commandDto)
+    public async Task<ActionResult<CommandReadDto>> CreateCommandForPlatform(Guid platformId, CommandCreateDto commandDto)
     {
         Console.WriteLine($"--> Hit CreateCommandForPlatform: {platformId}");
     

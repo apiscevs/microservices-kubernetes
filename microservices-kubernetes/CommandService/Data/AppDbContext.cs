@@ -20,6 +20,15 @@ namespace CommandService.Data
                 .WithOne(t => t.Platform)
                 .HasForeignKey(t => t.PlatformId);
             
+            // CosmosDb specific, configure the container name and partition key
+            modelBuilder.Entity<Platform>()
+                .ToContainer("Platforms") 
+                .HasPartitionKey(p => p.ExternalId); 
+
+            modelBuilder.Entity<Command>()
+                .ToContainer("Commands")
+                .HasPartitionKey(c => c.PlatformId);
+            
             base.OnModelCreating(modelBuilder);
         }
     }

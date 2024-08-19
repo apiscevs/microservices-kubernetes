@@ -12,3 +12,6 @@ kubectl get service --namespace=ingress-nginx
 #setup password
 kubectl create secret generic mssql --from-literal=SA_PASSWORD="Your_password123"
 
+kubectl create secret generic cosmosdb-secret \
+  --from-literal=CosmosDbEndpoint="endpoint" \
+  --from-literal=CosmosDbAccountKey="account-key"
