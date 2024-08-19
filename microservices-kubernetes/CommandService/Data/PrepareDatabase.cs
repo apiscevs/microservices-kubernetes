@@ -1,6 +1,8 @@
 ﻿using CommandService.Data;
 using CommandService.Models;
 using CommandService.SyncDataServices.Grpc;
+using Polly;
+using Polly.Retry;
 
 namespace PlatformService.Data
 {
@@ -11,8 +13,19 @@ namespace PlatformService.Data
             using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
             {
                 var grpcClient = serviceScope.ServiceProvider.GetService<IPlatformDataClient>();
-
-                var platforms = await grpcClient.GetAllPlatformsAsync();
+                
+                // CommandService can be initialized before Platform service is up.
+                // Adding retry logic
+                var retryPolicy = Policy
+                    .Handle<Exception>()
+                    .WaitAndRetryAsync(5, retryAttempt => TimeSpan.FromSeconds(2),
+                        (exception, timeSpan, retryCount, context) =>
+                        {
+                            Console.WriteLine($"Retry {retryCount} encountered an error: {exception.Message}. Waiting {timeSpan} before next retry.");
+                        });
+                
+                var platforms = await retryPolicy.ExecuteAsync(async () => 
+                    await grpcClient.GetAllPlatformsAsync());
 
                 await SeedDataAsync(serviceScope.ServiceProvider.GetService<ICommandRepository>(), platforms);
             }
@@ -35,4 +48,3 @@ namespace PlatformService.Data
         }
     }
 }
-

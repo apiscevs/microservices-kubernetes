@@ -1,23 +1,23 @@
 using System.Text;
 using System.Text.Json;
+using Microsoft.Extensions.Options;
 using PlatformService.DTO;
+using PlatformService.Settings;
 using RabbitMQ.Client;
 
 namespace PlatformService.AsyncDataServices;
 
 public class RabbitMqClient : IMessageBrokerClient
 {
-    private readonly IConfiguration _configuration;
     private readonly IConnection _connection;
     private readonly IModel _channel;
 
-    public RabbitMqClient(IConfiguration configuration)
+    public RabbitMqClient(IOptions<RabbitMqSettings> rabbitMqSettings)
     {
-        _configuration = configuration;
         var factory = new ConnectionFactory()
         {
-            HostName = _configuration["RabbitMQHost"],
-            Port = int.Parse(_configuration["RabbitMQPort"])
+            HostName = rabbitMqSettings.Value.RabbitMqHost,
+            Port = rabbitMqSettings.Value.RabbitMqPort
         };
         try
         {

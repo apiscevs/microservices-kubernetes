@@ -24,4 +24,3 @@ namespace CommandService.Data
         }
     }
 }
-

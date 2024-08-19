@@ -11,7 +11,7 @@ namespace PlatformService.SyncDataServices.Http
 
         public CommandDataClient(HttpClient httpClient)
         {
-            this._httpClient = httpClient;
+            _httpClient = httpClient;
         }
 
         public async Task SendPlatformCommand(PlatformReadDto platform)

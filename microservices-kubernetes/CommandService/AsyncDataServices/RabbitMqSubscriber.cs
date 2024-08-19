@@ -1,5 +1,7 @@
 using System.Text;
 using CommandService.EventProcessing;
+using CommandService.Settings;
+using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
@@ -7,19 +9,19 @@ namespace CommandService.AsyncDataServices;
 
 public class MessageBusSubscriber : BackgroundService
 {
-    private readonly IConfiguration _configuration;
     private readonly IEventProcessor _eventProcessor;
     private IConnection _connection;
     private IModel _channel;
     private string _queueName;
-
+    private readonly RabbitMqSettings _rabbitMqSettings;
+    
     public MessageBusSubscriber(
-        IConfiguration configuration,
+        IOptions<RabbitMqSettings> rabbitMqSettings,
         IEventProcessor eventProcessor)
     {
-        _configuration = configuration;
         _eventProcessor = eventProcessor;
-
+        _rabbitMqSettings = rabbitMqSettings.Value;
+        
         InitializeRabbitMq();
     }
 
@@ -30,8 +32,8 @@ public class MessageBusSubscriber : BackgroundService
         
         var factory = new ConnectionFactory()
         {
-            HostName = _configuration["RabbitMqHost"],
-            Port = int.Parse(_configuration["RabbitMqPort"])
+            HostName = _rabbitMqSettings.RabbitMqHost,
+            Port = _rabbitMqSettings.RabbitMqPort
         };
 
         _connection = factory.CreateConnection();

@@ -1,11 +1,19 @@
 ﻿using CommandService.AsyncDataServices;
 using CommandService.Data;
 using CommandService.EventProcessing;
+using CommandService.Settings;
 using CommandService.SyncDataServices.Grpc;
 using Microsoft.EntityFrameworkCore;
 using PlatformService.Data;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Register RabbitMqSettings with the configuration section
+builder.Services.Configure<RabbitMqSettings>(builder.Configuration.GetSection("RabbitMqSettings"));
+
+// Register GrpcSettings with the configuration section
+builder.Services.Configure<GrpcSettings>(builder.Configuration.GetSection("GrpcSettings"));
+
 
 // Add services to the container.
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

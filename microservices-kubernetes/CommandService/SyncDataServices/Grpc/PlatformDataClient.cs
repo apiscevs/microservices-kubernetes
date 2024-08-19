@@ -1,31 +1,28 @@
 using AutoMapper;
 using CommandService.Models;
+using CommandService.Settings;
 using Grpc.Net.Client;
+using Microsoft.Extensions.Options;
 using PlatformService;
 
 namespace CommandService.SyncDataServices.Grpc;
 
 public class PlatformDataClient : IPlatformDataClient
 {
-    private readonly IConfiguration _configuration;
     private readonly IMapper _mapper;
+    private readonly GrpcSettings _grpcSettings;
 
-    public PlatformDataClient(IConfiguration configuration, IMapper mapper)
+    public PlatformDataClient(IOptions<GrpcSettings> settings, IMapper mapper)
     {
-        _configuration = configuration;
         _mapper = mapper;
+        _grpcSettings = settings.Value;
     }
     
     public async Task<ICollection<Platform>> GetAllPlatformsAsync()
     {
-        Console.WriteLine($"Calling GRPC {_configuration["GrpcPlatform"]}");
-
-        Console.WriteLine($"Waiting 10 seconds...");
-        // Hack to make sure platform service is up and running
-        await Task.Delay(TimeSpan.FromSeconds(10));
+        Console.WriteLine($"Calling GRPC {_grpcSettings.GrpcPlatform}");
         
-        
-        var channel = GrpcChannel.ForAddress(_configuration["GrpcPlatform"]);
+        var channel = GrpcChannel.ForAddress(_grpcSettings.GrpcPlatform);
         var client = new GrpcPlatform.GrpcPlatformClient(channel);
         var request = new GetAllRequest();
 
@@ -38,7 +35,7 @@ public class PlatformDataClient : IPlatformDataClient
         catch (Exception e)
         {
             Console.WriteLine($"Error during Grpc call {e.Message}");
-            return new List<Platform>();
+            throw;
         }
     }
 }
