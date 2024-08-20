@@ -1,5 +1,4 @@
-﻿using System;
-using AutoMapper;
+﻿using AutoMapper;
 using PlatformService.DTO;
 using PlatformService.Models;
 

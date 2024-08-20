@@ -2,7 +2,6 @@
 using CommandService.Models;
 using CommandService.SyncDataServices.Grpc;
 using Polly;
-using Polly.Retry;
 
 namespace PlatformService.Data
 {
@@ -42,7 +41,6 @@ namespace PlatformService.Data
                 if (!platformExists)
                 {
                     await repository.CreatePlatformAsync(plat);
-                    repository.SaveChanges();
                 }
             }
         }

@@ -4,8 +4,6 @@ namespace CommandService.Data
 {
     public interface ICommandRepository
     {
-        void SaveChanges();
-        
         // Platforms
         Task<ICollection<Platform>> GetAllPlatformsAsync();
         Task CreatePlatformAsync(Platform platform);

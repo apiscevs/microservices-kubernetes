@@ -67,7 +67,6 @@ public class CommandsController : ControllerBase
         var command = _mapper.Map<Command>(commandDto);
     
         await _repository.CreateCommandAsync(platformId, command);
-        _repository.SaveChanges();
     
         var commandReadDto = _mapper.Map<CommandReadDto>(command);
     

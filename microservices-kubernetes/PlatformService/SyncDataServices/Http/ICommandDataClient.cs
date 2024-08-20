@@ -1,5 +1,4 @@
-﻿using System;
-using PlatformService.DTO;
+﻿using PlatformService.DTO;
 
 namespace PlatformService.SyncDataServices.Http
 {

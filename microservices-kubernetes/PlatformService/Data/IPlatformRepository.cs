@@ -1,5 +1,4 @@
-﻿using System;
-using PlatformService.Models;
+﻿using PlatformService.Models;
 
 namespace PlatformService.Data
 {

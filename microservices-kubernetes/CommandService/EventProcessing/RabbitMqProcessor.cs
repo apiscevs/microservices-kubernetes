@@ -59,7 +59,6 @@ public class RabbitMqProcessor : IEventProcessor
                 if (!await commandRepository.PlatformExistsByExternalIdAsync(platform.ExternalId))
                 {
                     await commandRepository.CreatePlatformAsync(platform);
-                    commandRepository.SaveChanges();
                 }
                 else
                 {

@@ -3,7 +3,7 @@ using CommandService.Data;
 using CommandService.EventProcessing;
 using CommandService.Settings;
 using CommandService.SyncDataServices.Grpc;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Options;
 using PlatformService.Data;
 
@@ -30,20 +30,21 @@ builder.Services.AddScoped<IPlatformDataClient, PlatformDataClient>();
 builder.Services.AddScoped<ICommandRepository, CommandRepository>();
 builder.Services.AddSingleton<IEventProcessor, RabbitMqProcessor>();
 
-builder.Services.AddDbContext<AppDbContext>((serviceProvider, opt) =>
+// Register the CosmosClient
+builder.Services.AddSingleton<CosmosClient>(serviceProvider =>
 {
-    Console.WriteLine("hey");
-    var settings = serviceProvider.GetRequiredService<IOptions<CosmosDbSettings>>();
-    Console.WriteLine("hey 2");
-    if (string.IsNullOrEmpty(settings.Value.CosmosDbAccountKey))
+    var cosmosDbSettings = serviceProvider.GetRequiredService<IOptions<CosmosDbSettings>>().Value;
+
+    var cosmosClientOptions = new CosmosClientOptions
     {
-        throw new ArgumentNullException($"CosmosDb connection is not configured");
-    }
-    Console.WriteLine("hey 3");
-    opt.UseCosmos(
-        settings.Value.CosmosDbEndpoint,
-        settings.Value.CosmosDbAccountKey,
-        databaseName: settings.Value.DatabaseName);
+        SerializerOptions = new CosmosSerializationOptions
+        {
+            PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase,
+            IgnoreNullValues = true
+        }
+    };
+    
+    return new CosmosClient(cosmosDbSettings.CosmosDbEndpoint, cosmosDbSettings.CosmosDbAccountKey, cosmosClientOptions);
 });
 
 var app = builder.Build();
