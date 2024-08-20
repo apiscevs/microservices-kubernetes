@@ -11,11 +11,15 @@ public class PlatformsController : ControllerBase
 {
     private readonly ICommandRepository _repository;
     private readonly IMapper _mapper;
+    private readonly ILogger<PlatformsController> _logger;
 
-    public PlatformsController(ICommandRepository repository, IMapper mapper)
+    public PlatformsController(ICommandRepository repository, 
+        IMapper mapper,
+        ILogger<PlatformsController> logger)
     {
         _repository = repository;
         _mapper = mapper;
+        _logger = logger;
     }
 
     [HttpGet]
@@ -23,6 +27,8 @@ public class PlatformsController : ControllerBase
     {
         Console.WriteLine("--> Getting Platforms from CommandsService");
 
+        _logger.LogInformation("Calling API method => {0}", nameof(GetPlatforms));
+        
         var platformItems = await _repository.GetAllPlatformsAsync();
 
         return Ok(_mapper.Map<IEnumerable<PlatformReadDto>>(platformItems));
@@ -33,6 +39,8 @@ public class PlatformsController : ControllerBase
     {
         Console.WriteLine("--> Inbound POST # Command Service");
 
+        _logger.LogInformation("I should see this in logs => {0}", nameof(GetPlatforms));
+        
         return Ok("Inbound test of from Platforms Controler");
     }
 }

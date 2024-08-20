@@ -10,6 +10,8 @@
     depends_on:
       - sqlserver
       - rabbitmq
+    environment:
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://jeager:4317"
 
   commandservice:
     image: commandservice
@@ -22,6 +24,8 @@
       - sqlserver
       - rabbitmq
       - platformservice
+    environment:
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://jeager:4317"
   
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -43,6 +47,12 @@
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
-        
+  jeager:
+    image: jaegertracing/all-in-one:latest
+    container_name: jeager
+    ports:
+      - 4717:4317
+      - 4318:4318
+      - 16686:16686
 volumes:
   sql-data:

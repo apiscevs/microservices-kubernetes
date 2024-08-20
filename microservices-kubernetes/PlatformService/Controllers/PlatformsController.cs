@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Diagnostics;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using PlatformService.AsyncDataServices;
 using PlatformService.Data;
@@ -16,22 +17,26 @@ namespace PlatformService.Controllers
         private readonly ICommandDataClient _commandDataClient;
         private readonly IMessageBrokerClient _messageBrokerClient;
         private readonly IMapper _mapper;
+        private readonly ILogger<PlatformsController> _logger;
 
         public PlatformsController(
             IPlatformRepository platformRepository,
             ICommandDataClient commandDataClient,
             IMessageBrokerClient messageBrokerClient,
-            IMapper mapper)
+            IMapper mapper,
+            ILogger<PlatformsController> logger)
         {   
             _platformRepository = platformRepository;
             _commandDataClient = commandDataClient;
             _messageBrokerClient = messageBrokerClient;
             _mapper = mapper;
+            _logger = logger;
         }
 
         [HttpGet]
         public async Task<ActionResult<ICollection<PlatformReadDto>>> GetPlatforms()
         {
+            _logger.LogInformation("Calling {0}", nameof(GetPlatforms));
             var platforms = await _platformRepository.GetAllAsync();
             var dtos = _mapper.Map<ICollection<PlatformReadDto>>(platforms);
             return Ok(dtos);

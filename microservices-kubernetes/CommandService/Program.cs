@@ -5,6 +5,8 @@ using CommandService.Settings;
 using CommandService.SyncDataServices.Grpc;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Options;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using PlatformService.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -46,6 +48,32 @@ builder.Services.AddSingleton<CosmosClient>(serviceProvider =>
     
     return new CosmosClient(cosmosDbSettings.CosmosDbEndpoint, cosmosDbSettings.CosmosDbAccountKey, cosmosClientOptions);
 });
+
+var serviceName = "CommandService";
+builder.Logging.AddOpenTelemetry(options =>
+{
+    options
+        .SetResourceBuilder(
+            ResourceBuilder.CreateDefault()
+                .AddService(serviceName))
+        .AttachLogsToActivityEvent();
+    // .AddConsoleExporter();
+});
+
+builder.Services
+    .AddOpenTelemetry()
+    .ConfigureResource(resource => resource.AddService(serviceName))
+    .WithTracing(tracing =>
+    {
+        tracing
+            .AddAspNetCoreInstrumentation()
+            .AddHttpClientInstrumentation()
+            .AddGrpcClientInstrumentation()
+            // .AddConsoleExporter()
+            .AddSqlClientInstrumentation(o => o.SetDbStatementForText = true);
+
+        tracing.AddOtlpExporter();
+    });
 
 var app = builder.Build();
 

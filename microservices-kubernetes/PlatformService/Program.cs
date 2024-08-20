@@ -1,4 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using OpenTelemetry.Logs;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using PlatformService.AsyncDataServices;
 using PlatformService.Data;
 using PlatformService.Settings;
@@ -44,6 +47,44 @@ builder.Services.AddHttpClient<ICommandDataClient, CommandDataClient>(client =>
     });
 builder.Services.AddSingleton<IMessageBrokerClient, RabbitMqClient>();
 builder.Services.AddGrpc();
+
+// builder.Services.AddLogging(loggingBuilder =>
+// {
+//     loggingBuilder.ClearProviders();
+//     loggingBuilder.AddConsole();
+//     loggingBuilder.AddOpenTelemetry(options =>
+//     { 
+//         options.IncludeFormattedMessage = true;
+//         options.IncludeScopes = true;
+//         options.ParseStateValues = true;
+//     });
+// });
+
+var serviceName = "PlatformService";
+builder.Logging.AddOpenTelemetry(options =>
+{
+    options
+        .SetResourceBuilder(
+            ResourceBuilder.CreateDefault()
+                .AddService(serviceName))
+        .AttachLogsToActivityEvent();
+        // .AddConsoleExporter();
+});
+
+builder.Services
+    .AddOpenTelemetry()
+    .ConfigureResource(resource => resource.AddService(serviceName))
+    .WithTracing(tracing =>
+    {
+        tracing
+            .AddAspNetCoreInstrumentation()
+            .AddHttpClientInstrumentation()
+            .AddGrpcClientInstrumentation()
+            // .AddConsoleExporter()
+            .AddSqlClientInstrumentation(o => o.SetDbStatementForText = true);
+
+        tracing.AddOtlpExporter();
+    });
 
 var app = builder.Build();
 
