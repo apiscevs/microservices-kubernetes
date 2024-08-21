@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using CommandService.Constants;
 using CommandService.Models;
 using CommandService.Settings;
@@ -25,6 +26,11 @@ public class CommandRepository : ICommandRepository
     // Platforms
     public async Task<ICollection<Platform>> GetAllPlatformsAsync()
     {
+        var activity = Activity.Current;
+        if (activity is not null)
+        {
+            activity.SetTag("testing-custom-tag", "SELECT * FROM c");
+        }
         var query = _platformsContainer.GetItemQueryIterator<Platform>("SELECT * FROM c");
         var results = new List<Platform>();
 

@@ -5,37 +5,65 @@ services:
       context: "/Users/aleksejspiscevs/Projects/NET/kubernetes/microservices-kubernetes"
       dockerfile: "CommandService/Dockerfile"
       target: "base"
+      args:
+        BUILD_CONFIGURATION: "Debug"
     command: []
     entrypoint:
-    - "dotnet"
-    - "/app/bin/Debug/net8.0/CommandService.dll"
+    - "/opt/rider-debugger/linux-arm64/JetBrains.Debugger.Worker"
+    - "--runtimeconfig"
+    - "/opt/rider-debugger/JetBrains.Debugger.Worker.runtimeconfig.json"
+    - "--mode=server"
+    - "--frontend-port=57100"
+    - "--backend-port=57300"
+    - "--timeout=60"
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
       DOTNET_USE_POLLING_FILE_WATCHER: "true"
+      RIDER_DEBUGGER_LOG_DIR: "/var/opt/rider-debugger"
+      RESHARPER_LOG_CONF: "/etc/opt/rider-debugger/backend-log.xml"
     image: "commandservice:dev"
-    ports: []
+    ports:
+    - "127.0.0.1:57050:57100"
+    - "127.0.0.1:57250:57300"
     volumes:
     - "/Users/aleksejspiscevs/.microsoft/usersecrets:/root/.microsoft/usersecrets"
     - "/Users/aleksejspiscevs/.nuget/packages:/root/.nuget/packages"
     - "/Users/aleksejspiscevs/Projects/NET/kubernetes/microservices-kubernetes/CommandService:/app:rw"
     - "/Users/aleksejspiscevs/Projects/NET/kubernetes/microservices-kubernetes:/src:rw"
+    - "/Users/aleksejspiscevs/.local/share/JetBrains/RiderRemoteDebugger/2024.1/LinuxArm64:/opt/rider-debugger"
+    - "/Applications/Rider.app/Contents/bin:/etc/opt/rider-debugger/backend-log.xml"
+    - "/Users/aleksejspiscevs/Library/Logs/JetBrains/Rider2024.1/DebuggerWorker/JetBrains.Debugger.Worker.2024_8_21_14_21_27:/var/opt/rider-debugger:rw"
     working_dir: "/app"
   platformservice:
     build:
       context: "/Users/aleksejspiscevs/Projects/NET/kubernetes/microservices-kubernetes"
       dockerfile: "PlatformService/Dockerfile"
       target: "base"
+      args:
+        BUILD_CONFIGURATION: "Debug"
     command: []
     entrypoint:
-    - "dotnet"
-    - "/app/bin/Debug/net8.0/PlatformService.dll"
+    - "/opt/rider-debugger/linux-arm64/JetBrains.Debugger.Worker"
+    - "--runtimeconfig"
+    - "/opt/rider-debugger/JetBrains.Debugger.Worker.runtimeconfig.json"
+    - "--mode=server"
+    - "--frontend-port=57100"
+    - "--backend-port=57300"
+    - "--timeout=60"
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
       DOTNET_USE_POLLING_FILE_WATCHER: "true"
+      RIDER_DEBUGGER_LOG_DIR: "/var/opt/rider-debugger"
+      RESHARPER_LOG_CONF: "/etc/opt/rider-debugger/backend-log.xml"
     image: "platformservice:dev"
-    ports: []
+    ports:
+    - "127.0.0.1:57051:57100"
+    - "127.0.0.1:57251:57300"
     volumes:
     - "/Users/aleksejspiscevs/.nuget/packages:/root/.nuget/packages"
     - "/Users/aleksejspiscevs/Projects/NET/kubernetes/microservices-kubernetes/PlatformService:/app:rw"
     - "/Users/aleksejspiscevs/Projects/NET/kubernetes/microservices-kubernetes:/src:rw"
+    - "/Users/aleksejspiscevs/.local/share/JetBrains/RiderRemoteDebugger/2024.1/LinuxArm64:/opt/rider-debugger"
+    - "/Applications/Rider.app/Contents/bin:/etc/opt/rider-debugger/backend-log.xml"
+    - "/Users/aleksejspiscevs/Library/Logs/JetBrains/Rider2024.1/DebuggerWorker/JetBrains.Debugger.Worker.2024_8_21_14_21_27:/var/opt/rider-debugger:rw"
     working_dir: "/app"
