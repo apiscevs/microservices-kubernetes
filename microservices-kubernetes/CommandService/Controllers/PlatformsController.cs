@@ -35,11 +35,14 @@ public class PlatformsController : ControllerBase
     }
 
     [HttpPost]
-    public ActionResult TestInboundConnection()
+    public async Task<ActionResult> TestInboundConnection()
     {
+        await Task.Delay(1);
         Console.WriteLine("--> Inbound POST # Command Service");
 
         _logger.LogInformation("I should see this in logs => {0}", nameof(GetPlatforms));
+        
+        var platformItems = await _repository.GetAllPlatformsAsync();
         
         return Ok("Inbound test of from Platforms Controler");
     }

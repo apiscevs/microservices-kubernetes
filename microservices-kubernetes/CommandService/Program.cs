@@ -36,13 +36,22 @@ builder.Services.AddSingleton<IEventProcessor, RabbitMqProcessor>();
 builder.Services.AddSingleton<CosmosClient>(serviceProvider =>
 {
     var cosmosDbSettings = serviceProvider.GetRequiredService<IOptions<CosmosDbSettings>>().Value;
-
+    
     var cosmosClientOptions = new CosmosClientOptions
     {
         SerializerOptions = new CosmosSerializationOptions
         {
             PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase,
             IgnoreNullValues = true
+        },
+        CosmosClientTelemetryOptions = new CosmosClientTelemetryOptions
+        {
+            DisableDistributedTracing = false, // Enable distributed tracing
+            CosmosThresholdOptions = new CosmosThresholdOptions
+            {
+                PointOperationLatencyThreshold = TimeSpan.FromMilliseconds(1),
+                NonPointOperationLatencyThreshold = TimeSpan.FromMilliseconds(1)
+            }
         }
     };
     
@@ -50,14 +59,18 @@ builder.Services.AddSingleton<CosmosClient>(serviceProvider =>
 });
 
 var serviceName = "CommandService";
+
+var resourceBuilder = ResourceBuilder.CreateDefault()
+    .AddService(serviceName);
+
+// Turn on CosmosDB logs...
+AppContext.SetSwitch("Azure.Experimental.EnableActivitySource", true);
+
 builder.Logging.AddOpenTelemetry(options =>
 {
     options
-        .SetResourceBuilder(
-            ResourceBuilder.CreateDefault()
-                .AddService(serviceName))
+        .SetResourceBuilder(resourceBuilder)
         .AttachLogsToActivityEvent();
-    // .AddConsoleExporter();
 });
 
 builder.Services
@@ -66,6 +79,8 @@ builder.Services
     .WithTracing(tracing =>
     {
         tracing
+            .AddSource("Azure.Cosmos.Operation")
+            .AddSource("Azure.Cosmos.Request")
             .AddAspNetCoreInstrumentation()
             .AddHttpClientInstrumentation()
             .AddGrpcClientInstrumentation()

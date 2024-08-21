@@ -61,14 +61,18 @@ builder.Services.AddGrpc();
 // });
 
 var serviceName = "PlatformService";
+
+var resourceBuilder = ResourceBuilder.CreateDefault()
+    .AddService(serviceName);
+
+// Turn on CosmosDB logs...
+AppContext.SetSwitch("Azure.Experimental.EnableActivitySource", true);
+
 builder.Logging.AddOpenTelemetry(options =>
 {
     options
-        .SetResourceBuilder(
-            ResourceBuilder.CreateDefault()
-                .AddService(serviceName))
+        .SetResourceBuilder(resourceBuilder)
         .AttachLogsToActivityEvent();
-        // .AddConsoleExporter();
 });
 
 builder.Services
@@ -77,6 +81,8 @@ builder.Services
     .WithTracing(tracing =>
     {
         tracing
+            .AddSource("Azure.Cosmos.Operation")
+            .AddSource("Azure.Cosmos.Request")
             .AddAspNetCoreInstrumentation()
             .AddHttpClientInstrumentation()
             .AddGrpcClientInstrumentation()
@@ -85,7 +91,6 @@ builder.Services
 
         tracing.AddOtlpExporter();
     });
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
