@@ -54,5 +54,12 @@
       - 4717:4317
       - 4318:4318
       - 16686:16686
+
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+    command: [ "redis-server", "--appendonly", "yes" ]
+    
 volumes:
   sql-data:

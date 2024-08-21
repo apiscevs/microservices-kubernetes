@@ -8,12 +8,14 @@ using Microsoft.Extensions.Options;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using PlatformService.Data;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Register RabbitMqSettings with the configuration section
 builder.Services.Configure<RabbitMqSettings>(builder.Configuration.GetSection("RabbitMqSettings"));
 builder.Services.Configure<CosmosDbSettings>(builder.Configuration.GetSection("CosmosDbSettings"));
+builder.Services.Configure<RedisSettings>(builder.Configuration.GetSection("RedisSettings"));
 
 // Register GrpcSettings with the configuration section
 builder.Services.Configure<GrpcSettings>(builder.Configuration.GetSection("GrpcSettings"));
@@ -89,6 +91,14 @@ builder.Services
 
         tracing.AddOtlpExporter();
     });
+
+builder.Services.AddSingleton<IConnectionMultiplexer>(serviceProvider =>
+{
+    var redisSettings = serviceProvider.GetRequiredService<IOptions<RedisSettings>>().Value;
+    
+    var configuration = ConfigurationOptions.Parse($"{redisSettings.Endpoint}:{redisSettings.Port}", true);
+    return ConnectionMultiplexer.Connect(configuration);
+});
 
 var app = builder.Build();
 

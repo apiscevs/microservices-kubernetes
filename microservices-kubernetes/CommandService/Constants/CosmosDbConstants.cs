@@ -4,7 +4,7 @@ public static class CosmosDbConstants
 {
     public static class CommandServiceContainers
     {
-        public const string Platforms = "Platforms";
-        public const string Commands = "Commands";
+        public const string Platforms = "platforms";
+        public const string Commands = "commands";
     }
 }

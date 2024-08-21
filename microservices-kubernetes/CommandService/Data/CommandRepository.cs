@@ -13,14 +13,12 @@ public class CommandRepository : ICommandRepository
 
     public CommandRepository(CosmosClient cosmosClient, IOptions<CosmosDbSettings> cosmosDbSettings)
     {
-        _platformsContainer = cosmosClient.GetContainer(cosmosDbSettings.Value.DatabaseName, CosmosDbConstants.CommandServiceContainers.Platforms);
-        _commandsContainer = cosmosClient.GetContainer(cosmosDbSettings.Value.DatabaseName, CosmosDbConstants.CommandServiceContainers.Commands);
-    }
-
-    public void SaveChanges()
-    {
-        // Cosmos DB operations are generally immediate, so this might not be needed.
-        // You could remove this method if it's not necessary in your Cosmos DB implementation.
+        _platformsContainer = cosmosClient.GetContainer(
+            cosmosDbSettings.Value.DatabaseName, 
+            $"{cosmosDbSettings.Value.ContainerPrefix}-{CosmosDbConstants.CommandServiceContainers.Platforms}");
+        _commandsContainer = cosmosClient.GetContainer(
+            cosmosDbSettings.Value.DatabaseName, 
+            $"{cosmosDbSettings.Value.ContainerPrefix}-{CosmosDbConstants.CommandServiceContainers.Commands}");
     }
 
     // Platforms
