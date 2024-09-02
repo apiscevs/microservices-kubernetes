@@ -47,6 +47,7 @@
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
+      
   jeager:
     image: jaegertracing/all-in-one:latest
     container_name: jeager
@@ -60,6 +61,23 @@
     ports:
       - "6379:6379"
     command: [ "redis-server", "--appendonly", "yes" ]
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana  # Persist Grafana data
     
 volumes:
   sql-data:
+  grafana_data:

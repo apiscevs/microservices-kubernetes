@@ -81,4 +81,11 @@ public class PlatformsController : ControllerBase
         
         return Ok("Inbound test of from Platforms Controler");
     }
+    
+    
+    [HttpGet("TestException")]
+    public async Task<ActionResult> TestException()
+    {
+        throw new NotImplementedException("This is intentionally");
+    }
 }

@@ -5,6 +5,7 @@ using CommandService.Settings;
 using CommandService.SyncDataServices.Grpc;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Options;
+using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using PlatformService.Data;
@@ -90,7 +91,13 @@ builder.Services
             .AddSqlClientInstrumentation(o => o.SetDbStatementForText = true);
 
         tracing.AddOtlpExporter();
-    });
+    })
+    .WithMetrics(metrics =>
+            metrics
+                .AddAspNetCoreInstrumentation() // ASP.NET Core relate
+                .AddRuntimeInstrumentation() // .NET Runtime metrics like - GC, Memory Pressure, Heap Leaks etc
+                .AddPrometheusExporter() // Prometheus Exporter
+    );
 
 builder.Services.AddSingleton<IConnectionMultiplexer>(serviceProvider =>
 {
@@ -114,6 +121,8 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapPrometheusScrapingEndpoint();
 
 await PrepareDatabase.PrepPopulationAsync(app);
 
