@@ -1,0 +1,22 @@
+replicas: 1
+
+image:
+  repository: redis
+  tag: "alpine"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 6379
+
+ingress:
+  enabled: false
+
+fullnameOverride: ""
+nameOverride: ""
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 2
+  targetCPUUtilizationPercentage: 80

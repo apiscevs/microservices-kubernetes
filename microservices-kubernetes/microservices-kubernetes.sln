@@ -29,6 +29,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "K8S", "K8S", "{3721B9AA-4F5
 		K8S\redis-deployment.yaml = K8S\redis-deployment.yaml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AKS", "AKS", "{214CC4B9-FDE7-43AF-B367-DB1ADF43A5C4}"
+	ProjectSection(SolutionItems) = preProject
+		K8S\redis-deployment.yaml = K8S\redis-deployment.yaml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,5 +54,8 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {17A697C2-4253-4BF0-AB36-C12E1071FDCE}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{214CC4B9-FDE7-43AF-B367-DB1ADF43A5C4} = {3721B9AA-4F5E-48EE-83AB-8EBE27D125C0}
 	EndGlobalSection
 EndGlobal
