@@ -5,6 +5,7 @@ using CommandService.Settings;
 using CommandService.SyncDataServices.Grpc;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Options;
+using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
@@ -64,7 +65,7 @@ builder.Services.AddSingleton<CosmosClient>(serviceProvider =>
     return new CosmosClient(cosmosDbSettings.CosmosDbEndpoint, cosmosDbSettings.CosmosDbAccountKey, cosmosClientOptions);
 });
 
-var serviceName = "CommandService";
+var serviceName = "commandservice";
 
 var resourceBuilder = ResourceBuilder.CreateDefault()
     .AddService(serviceName);
@@ -92,15 +93,14 @@ builder.Services
             .AddGrpcClientInstrumentation()
             // .AddConsoleExporter()
             .AddSqlClientInstrumentation(o => o.SetDbStatementForText = true);
-
-        tracing.AddOtlpExporter();
     })
     .WithMetrics(metrics =>
             metrics
                 .AddAspNetCoreInstrumentation() // ASP.NET Core relate
                 .AddRuntimeInstrumentation() // .NET Runtime metrics like - GC, Memory Pressure, Heap Leaks etc
                 .AddPrometheusExporter() // Prometheus Exporter
-    );
+    )
+    .UseOtlpExporter();
 
 builder.Services.AddSingleton<IConnectionMultiplexer>(serviceProvider =>
 {

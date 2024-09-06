@@ -17,7 +17,7 @@ public static class Extensions
 {
     public static IHostApplicationBuilder AddServiceDefaults(this IHostApplicationBuilder builder)
     {
-        // builder.ConfigureOpenTelemetry();
+        builder.ConfigureOpenTelemetry();
 
         builder.AddDefaultHealthChecks();
 
@@ -73,10 +73,14 @@ public static class Extensions
     {
         var useOtlpExporter = !string.IsNullOrWhiteSpace(builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"]);
 
-        if (useOtlpExporter)
-        {
-            builder.Services.AddOpenTelemetry().UseOtlpExporter();
-        }
+        // Commented out, since exporters are registered later, otherwise exception is generated:
+        // Signal-specific AddOtlpExporter methods and the cross-cutting UseOtlpExporter method being invoked on the same IServiceCollection is not supported.
+        // https://github.com/open-telemetry/opentelemetry-dotnet/blob/57c442cc7b2fe93c81ca877de28f5204fdb11ebb/src/OpenTelemetry.Exporter.OpenTelemetryProtocol/Builder/OpenTelemetryBuilderServiceProviderExtensions.cs#L24
+        
+        // if (useOtlpExporter)
+        // {
+        //     builder.Services.AddOpenTelemetry().UseOtlpExporter();
+        // }
 
         // Uncomment the following lines to enable the Azure Monitor exporter (requires the Azure.Monitor.OpenTelemetry.AspNetCore package)
         //if (!string.IsNullOrEmpty(builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]))

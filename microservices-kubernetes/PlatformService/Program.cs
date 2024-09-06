@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using OpenTelemetry;
 using OpenTelemetry.Logs;
+using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using PlatformService.AsyncDataServices;
@@ -73,7 +75,7 @@ builder.Services.AddGrpc();
 //     });
 // });
 
-var serviceName = "PlatformService";
+var serviceName = "platformservice";
 
 var resourceBuilder = ResourceBuilder.CreateDefault()
     .AddService(serviceName);
@@ -101,9 +103,15 @@ builder.Services
             .AddGrpcClientInstrumentation()
             // .AddConsoleExporter()
             .AddSqlClientInstrumentation(o => o.SetDbStatementForText = true);
+    })
+    .WithMetrics(metrics =>
+            metrics
+                .AddAspNetCoreInstrumentation() // ASP.NET Core relate
+                .AddRuntimeInstrumentation() // .NET Runtime metrics like - GC, Memory Pressure, Heap Leaks etc
+                .AddPrometheusExporter() // Prometheus Exporter
+    )
+    .UseOtlpExporter();
 
-        tracing.AddOtlpExporter();
-    });
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -128,6 +136,8 @@ app.UseEndpoints(endpoints =>
         await context.Response.SendFileAsync("Protos/platforms.proto");
     });
 });
+
+app.MapPrometheusScrapingEndpoint();
 
 PrepareDatabase.PreparePopulation(app, builder.Environment.IsProduction());
 app.Run();

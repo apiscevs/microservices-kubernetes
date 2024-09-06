@@ -7,7 +7,7 @@ var db = builder.AddSqlServer("sqlserver", password: sqlPassword, port: 45678)
     .WithDataVolume()
     .AddDatabase("PlatformsConnectionString", "PlatformService");
 
-var platformService = builder.AddProject<PlatformService>("aspire-platformservice")
+var platformService = builder.AddProject<PlatformService>("platformservice")
     .WithReference(db)
     .WithEnvironment("RabbitMqSettings__RabbitMqHost", "localhost")
     .WithEnvironment("RabbitMqSettings__RabbitMqPort", "5675")
@@ -24,7 +24,7 @@ var messaging = builder.AddRabbitMQ("rabbitmq", port: 5675, userName: rabbitMqUs
 
 var cache = builder.AddRedis("redis", port: 6689);
 
-var commandService = builder.AddProject<CommandService>("aspire-commandservice")
+var commandService = builder.AddProject<CommandService>("commandservice")
     .WithReference(platformService)
     .WithReference(messaging)
     .WithReference(cache)
@@ -38,7 +38,7 @@ var commandService = builder.AddProject<CommandService>("aspire-commandservice")
 
 platformService
     // Misc
-    .WithEnvironment("CommandService", "http://aspire-commandservice") // service discovery should pick it
+    .WithEnvironment("CommandService", "http://commandservice") // service discovery should pick it
     .WithReference(commandService);
 
 builder.Build().Run();
