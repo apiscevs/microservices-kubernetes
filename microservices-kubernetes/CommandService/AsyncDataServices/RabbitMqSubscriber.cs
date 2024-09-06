@@ -33,7 +33,9 @@ public class MessageBusSubscriber : BackgroundService
         var factory = new ConnectionFactory()
         {
             HostName = _rabbitMqSettings.RabbitMqHost,
-            Port = _rabbitMqSettings.RabbitMqPort
+            Port = _rabbitMqSettings.RabbitMqPort,
+            UserName = "guest",
+            Password = "guest"
         };
 
         _connection = factory.CreateConnection();

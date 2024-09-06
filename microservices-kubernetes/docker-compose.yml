@@ -6,7 +6,7 @@
       dockerfile: PlatformService/Dockerfile
     ports:
       - "10100:8080"
-      - "10200:666"
+      - "10200:6666"
     depends_on:
       - sqlserver
       - rabbitmq

@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: platforms-depl
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: platformservice
@@ -38,8 +38,8 @@ spec:
     targetPort: 8080 # the port that docker container is exposing
   - name: platformservicegrpc # workaround to make gRPC work without actual TLS certificate
     protocol: TCP
-    port: 666
-    targetPort: 666 # the port that docker container is exposing
+    port: 6666
+    targetPort: 6666 # the port that docker container is exposing
 
 # applies any chanhes to deployment, dont need to delete it
 #kubectl apply -f platforms-depl.yaml 

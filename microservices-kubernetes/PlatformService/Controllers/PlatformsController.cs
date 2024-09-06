@@ -59,6 +59,7 @@ namespace PlatformService.Controllers
         [HttpPost]
         public async Task<ActionResult<PlatformReadDto>> CreatePlatform([FromBody] PlatformCreateDto model)
         {
+            Console.WriteLine("IS SHOULD SEE THIS!!!");
             var platform = _mapper.Map<Platform>(model);
 
             _platformRepository.CreatePlatform(platform);
@@ -87,6 +88,7 @@ namespace PlatformService.Controllers
             }
             catch(Exception e)
             {
+                throw;
                 Console.WriteLine($"Exception during sending asynchronously {nameof(CreatePlatform)}. {e.Message}");
             }
             

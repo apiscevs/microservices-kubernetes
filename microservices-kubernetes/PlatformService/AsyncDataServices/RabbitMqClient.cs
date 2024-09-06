@@ -14,6 +14,7 @@ public class RabbitMqClient : IMessageBrokerClient
 
     public RabbitMqClient(IOptions<RabbitMqSettings> rabbitMqSettings)
     {
+        Console.WriteLine(JsonSerializer.Serialize(rabbitMqSettings));
         var factory = new ConnectionFactory()
         {
             HostName = rabbitMqSettings.Value.RabbitMqHost,

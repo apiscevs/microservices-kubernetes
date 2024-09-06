@@ -10,6 +10,11 @@ using PlatformService.SyncDataServices.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Aspire
+builder.AddServiceDefaults();
+// hack to check if database will be alive
+Thread.Sleep(10_000);
+
 // Register RabbitMqSettings with the configuration section
 builder.Services.Configure<RabbitMqSettings>(builder.Configuration.GetSection("RabbitMqSettings"));
 
@@ -25,7 +30,15 @@ var connectionString = builder.Configuration.GetConnectionString("PlatformsConne
 Console.WriteLine($"Using DB {connectionString}");
 builder.Services.AddDbContext<AppDbContext>(opt =>
 {
-    opt.UseSqlServer(connectionString);
+    opt.UseSqlServer(connectionString, options =>
+    {
+        // Enabling transient error resiliency
+        options.EnableRetryOnFailure(
+            maxRetryCount: 5, // The maximum number of retry attempts
+            maxRetryDelay: TimeSpan.FromSeconds(5), // The delay between retries
+            errorNumbersToAdd: null // Additional SQL error numbers to include in retry logic
+        );
+    });
     // opt.UseInMemoryDatabase("InMemoryDb");
 });
 

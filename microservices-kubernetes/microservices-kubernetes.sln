@@ -34,6 +34,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AKS", "AKS", "{214CC4B9-FDE
 		K8S\redis-deployment.yaml = K8S\redis-deployment.yaml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppHost", "AppHost\AppHost.csproj", "{E98239E5-5C61-4C9A-A6F8-9563EF8ABFA6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceDefaults", "ServiceDefaults\ServiceDefaults.csproj", "{C44511D6-902B-4F92-85AD-E6A3A30CCB23}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,6 +52,14 @@ Global
 		{740F4533-6B21-4E9F-9E38-E4C85014817B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{740F4533-6B21-4E9F-9E38-E4C85014817B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{740F4533-6B21-4E9F-9E38-E4C85014817B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E98239E5-5C61-4C9A-A6F8-9563EF8ABFA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E98239E5-5C61-4C9A-A6F8-9563EF8ABFA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E98239E5-5C61-4C9A-A6F8-9563EF8ABFA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E98239E5-5C61-4C9A-A6F8-9563EF8ABFA6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C44511D6-902B-4F92-85AD-E6A3A30CCB23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C44511D6-902B-4F92-85AD-E6A3A30CCB23}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C44511D6-902B-4F92-85AD-E6A3A30CCB23}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C44511D6-902B-4F92-85AD-E6A3A30CCB23}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
