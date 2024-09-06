@@ -10,10 +10,7 @@ var db = builder.AddSqlServer("sqlserver", password: sqlPassword, port: 45678)
 var platformService = builder.AddProject<PlatformService>("platformservice")
     .WithReference(db)
     .WithEnvironment("RabbitMqSettings__RabbitMqHost", "localhost")
-    .WithEnvironment("RabbitMqSettings__RabbitMqPort", "5675")
-    // Grpc 
-    .WithHttpEndpoint(name: "customGrpc", port: 6666, isProxied: false)
-    ;
+    .WithEnvironment("RabbitMqSettings__RabbitMqPort", "5675");
 
 var rabbitMqUser = builder.AddParameter("rabbitmq-username", secret: true);
 var rabbitMqPassword = builder.AddParameter("rabbitmq-password", secret: true);
