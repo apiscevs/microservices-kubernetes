@@ -6,6 +6,7 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using PlatformService.AsyncDataServices;
 using PlatformService.Data;
+using PlatformService.OpenTelemtry;
 using PlatformService.Settings;
 using PlatformService.SyncDataServices.Grpc;
 using PlatformService.SyncDataServices.Http;
@@ -75,10 +76,8 @@ builder.Services.AddGrpc();
 //     });
 // });
 
-var serviceName = "platformservice";
-
 var resourceBuilder = ResourceBuilder.CreateDefault()
-    .AddService(serviceName);
+    .AddService(DiagnosticsConfig.SourceName);
 
 // Turn on CosmosDB logs...
 AppContext.SetSwitch("Azure.Experimental.EnableActivitySource", true);
@@ -92,12 +91,13 @@ builder.Logging.AddOpenTelemetry(options =>
 
 builder.Services
     .AddOpenTelemetry()
-    .ConfigureResource(resource => resource.AddService(serviceName))
+    .ConfigureResource(resource => resource.AddService(DiagnosticsConfig.SourceName))
     .WithTracing(tracing =>
     {
         tracing
             .AddSource("Azure.Cosmos.Operation")
             .AddSource("Azure.Cosmos.Request")
+            .AddSource(DiagnosticsConfig.SourceName)
             .AddAspNetCoreInstrumentation()
             .AddHttpClientInstrumentation()
             .AddGrpcClientInstrumentation()

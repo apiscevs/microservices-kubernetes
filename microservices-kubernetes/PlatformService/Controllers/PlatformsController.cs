@@ -5,6 +5,7 @@ using PlatformService.AsyncDataServices;
 using PlatformService.Data;
 using PlatformService.DTO;
 using PlatformService.Models;
+using PlatformService.OpenTelemtry;
 using PlatformService.SyncDataServices.Http;
 
 namespace PlatformService.Controllers
@@ -59,7 +60,8 @@ namespace PlatformService.Controllers
         [HttpPost]
         public async Task<ActionResult<PlatformReadDto>> CreatePlatform([FromBody] PlatformCreateDto model)
         {
-            Console.WriteLine("IS SHOULD SEE THIS!!!");
+            using var activity = DiagnosticsConfig.Source.StartActivity("My custom activity");
+            
             var platform = _mapper.Map<Platform>(model);
 
             _platformRepository.CreatePlatform(platform);
@@ -88,6 +90,8 @@ namespace PlatformService.Controllers
             }
             catch(Exception e)
             {
+                activity?.SetTag("error", true);  // Optional: Tag the activity with the error
+                activity?.SetTag("exception", e.Message);
                 throw;
                 Console.WriteLine($"Exception during sending asynchronously {nameof(CreatePlatform)}. {e.Message}");
             }
