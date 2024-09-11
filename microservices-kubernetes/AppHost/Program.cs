@@ -16,8 +16,8 @@ var rabbitMqUser = builder.AddParameter("rabbitmq-username", secret: true);
 var rabbitMqPassword = builder.AddParameter("rabbitmq-password", secret: true);
 var messaging = builder.AddRabbitMQ("rabbitmq", port: 5675, userName: rabbitMqUser, password: rabbitMqPassword)
     .WithManagementPlugin()
-    .WithDataVolume("rabbit-mq-volume-rly2")
-    .WithEndpoint(name:"rabbit-mq-ui", port: 15675, targetPort: 15672, isProxied: true, scheme: "http");
+    .WithDataVolume("rabbit-mq-volume-rly2");
+    //.WithEndpoint(name:"rabbit-mq-ui", port: 15675, targetPort: 15672, isProxied: true, scheme: "http");
 
 var cache = builder.AddRedis("redis", port: 6689);
 

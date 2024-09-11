@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using PlatformService.AsyncDataServices;
 using PlatformService.Data;
 using PlatformService.DTO;
+using PlatformService.Metrics;
 using PlatformService.Models;
 using PlatformService.OpenTelemtry;
 using PlatformService.SyncDataServices.Http;
@@ -19,19 +20,22 @@ namespace PlatformService.Controllers
         private readonly IMessageBrokerClient _messageBrokerClient;
         private readonly IMapper _mapper;
         private readonly ILogger<PlatformsController> _logger;
+        private readonly ApiHitsMetrics _apiHitsMetrics;
 
         public PlatformsController(
             IPlatformRepository platformRepository,
             ICommandDataClient commandDataClient,
             IMessageBrokerClient messageBrokerClient,
             IMapper mapper,
-            ILogger<PlatformsController> logger)
+            ILogger<PlatformsController> logger,
+            ApiHitsMetrics apiHitsMetrics)
         {   
             _platformRepository = platformRepository;
             _commandDataClient = commandDataClient;
             _messageBrokerClient = messageBrokerClient;
             _mapper = mapper;
             _logger = logger;
+            _apiHitsMetrics = apiHitsMetrics;
         }
 
         [HttpGet]
@@ -60,6 +64,8 @@ namespace PlatformService.Controllers
         [HttpPost]
         public async Task<ActionResult<PlatformReadDto>> CreatePlatform([FromBody] PlatformCreateDto model)
         {
+            _apiHitsMetrics.IncrementApiHits();
+
             using var activity = DiagnosticsConfig.Source.StartActivity("My custom activity");
             
             var platform = _mapper.Map<Platform>(model);

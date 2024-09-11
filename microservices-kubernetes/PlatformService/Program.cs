@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Diagnostics.Metrics;
+using Microsoft.EntityFrameworkCore;
 using OpenTelemetry;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
@@ -6,6 +7,7 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using PlatformService.AsyncDataServices;
 using PlatformService.Data;
+using PlatformService.Metrics;
 using PlatformService.OpenTelemtry;
 using PlatformService.Settings;
 using PlatformService.SyncDataServices.Grpc;
@@ -89,6 +91,8 @@ builder.Logging.AddOpenTelemetry(options =>
         .AttachLogsToActivityEvent();
 });
 
+builder.Services.AddSingleton<ApiHitsMetrics>();
+
 builder.Services
     .AddOpenTelemetry()
     .ConfigureResource(resource => resource.AddService(DiagnosticsConfig.SourceName))
@@ -106,6 +110,7 @@ builder.Services
     })
     .WithMetrics(metrics =>
             metrics
+                .AddMeter("PlatformService.Metrics")
                 .AddAspNetCoreInstrumentation() // ASP.NET Core relate
                 .AddRuntimeInstrumentation() // .NET Runtime metrics like - GC, Memory Pressure, Heap Leaks etc
                 .AddPrometheusExporter() // Prometheus Exporter
@@ -113,6 +118,10 @@ builder.Services
     .UseOtlpExporter();
 
 var app = builder.Build();
+
+// Initialize the uptime metric, otherwise metrics will be missing
+// For lets say api hits it is ok, however non initialized gauge with uptime, is bad
+app.Services.GetRequiredService<ApiHitsMetrics>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
